@@ -4,30 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIBEOCRACY | Intelligence Over Hierarchy</title>
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <style>
-        body, html {
+        html, body {
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
             background-color: #050505;
             color: #ffffff;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
-            scroll-behavior: smooth;
+            cursor: default;
         }
 
         h1, h2, h3, h4, h5, .display-font {
             font-family: 'Space Grotesk', sans-serif;
         }
 
-        /* The canvas stays fixed in the background */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -35,10 +33,9 @@
             width: 100vw;
             height: 100vh;
             z-index: 0;
-            pointer-events: none; /* Let clicks pass through to content */
+            pointer-events: none;
         }
 
-        /* Content scrolls over the canvas */
         #content-wrapper {
             position: relative;
             z-index: 10;
@@ -61,14 +58,6 @@
             border-radius: 24px;
             padding: 3rem;
             max-width: 800px;
-            transform: translateY(50px);
-            opacity: 0;
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .glass-panel.visible {
-            transform: translateY(0);
-            opacity: 1;
         }
 
         .text-gradient {
@@ -77,7 +66,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .text-gradient-spiral {
             background: linear-gradient(to right, #ef4444, #3b82f6, #f97316, #22c55e, #eab308, #14b8a6);
             -webkit-background-clip: text;
@@ -85,110 +74,432 @@
             background-clip: text;
         }
 
-        /* Scroll indicator */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: bounce 2s infinite;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
-            40% { transform: translateY(-20px) translateX(-50%); }
-            60% { transform: translateY(-10px) translateX(-50%); }
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #050505;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        
-        .pulse-glow {
-            animation: pulseGlow 3s infinite alternate;
-        }
-        
+        .pulse-glow { animation: pulseGlow 3s infinite alternate; }
         @keyframes pulseGlow {
             0% { box-shadow: 0 0 20px rgba(79, 172, 254, 0.2); }
             100% { box-shadow: 0 0 40px rgba(240, 147, 251, 0.4); }
         }
+
+        /* ---------- Grain overlay ---------- */
+        .grain {
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            pointer-events: none;
+            opacity: 0.035;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        }
+
+        /* ---------- Scroll progress bar ---------- */
+        .progress-bar {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 3px;
+            z-index: 100;
+            background: rgba(255,255,255,0.06);
+        }
+        .progress-fill {
+            height: 100%;
+            width: 100%;
+            transform: scaleX(0);
+            transform-origin: left;
+            background: linear-gradient(90deg, #00f2fe, #4facfe, #f093fb);
+        }
+
+        /* ---------- Custom cursor ---------- */
+        .cursor-dot, .cursor-ring {
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 200;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .cursor-dot { width: 6px; height: 6px; background: #fff; }
+        .cursor-ring { width: 34px; height: 34px; border: 1px solid rgba(255,255,255,0.35); transition: width .25s, height .25s, border-color .25s, background .25s; }
+        .cursor-ring.is-active { width: 60px; height: 60px; background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.6); }
+        @media (pointer: coarse) {
+            .cursor-dot, .cursor-ring { display: none; }
+        }
+
+        /* ---------- Nav ---------- */
+        .site-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 60;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.4rem 6vw;
+            background: linear-gradient(to bottom, rgba(5,5,5,0.75), rgba(5,5,5,0));
+            backdrop-filter: blur(6px);
+        }
+        .nav-link {
+            position: relative;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            transition: color .3s;
+            padding-bottom: 4px;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 0; bottom: 0;
+            height: 1px; width: 0;
+            background: #fff;
+            transition: width .35s cubic-bezier(0.16,1,0.3,1);
+        }
+        .nav-link.active, .nav-link:hover { color: #fff; }
+        .nav-link.active::after { width: 100%; }
+
+        /* ---------- Side vertical tag ---------- */
+        .side-tag {
+            position: fixed;
+            right: 22px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 55;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .side-tag span.label {
+            writing-mode: vertical-rl;
+            letter-spacing: 0.3em;
+            font-size: 10.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* ---------- Section index (bottom-left) ---------- */
+        .section-index {
+            position: fixed;
+            bottom: 26px;
+            left: 6vw;
+            z-index: 55;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.4);
+        }
+
+        /* ---------- Grid / blueprint backdrop ---------- */
+        .grid-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 42px 42px;
+            -webkit-mask-image: radial-gradient(ellipse at center, black 35%, transparent 75%);
+            mask-image: radial-gradient(ellipse at center, black 35%, transparent 75%);
+        }
+
+        .index-label {
+            font-family: 'Space Grotesk', monospace;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            font-size: 0.78rem;
+        }
+
+        .ov-hidden { overflow: hidden; display: block; }
+
+        /* ---------- Stats ---------- */
+        .stat-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: clamp(2.2rem, 4vw, 3.5rem);
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.45);
+            margin-top: 0.5rem;
+        }
+
+        /* ---------- Pyramid (sec 2) ---------- */
+        .pyramid-line { fill: none; stroke: rgba(255,255,255,0.55); stroke-width: 1.4; }
+
+        /* ---------- Spiral cards (sec 3) ---------- */
+        .spiral-track { will-change: transform; }
+        .spiral-card {
+            flex-shrink: 0;
+            width: 280px;
+            height: 340px;
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.02);
+        }
+        @media (min-width: 768px) { .spiral-card { width: 340px; } }
+        .spiral-progress-track { position: relative; }
+        .spiral-progress-fill { width: 0%; }
+
+        /* ---------- Marquee (sec 4) ---------- */
+        .marquee-wrap {
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            overflow: hidden;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            white-space: nowrap;
+        }
+        .marquee-track span {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: 600;
+            padding: 1.2rem 2rem;
+            color: rgba(255,255,255,0.85);
+        }
+        .marquee-track span.dim { color: rgba(255,255,255,0.25); }
+
+        /* ---------- CTA blob ---------- */
+        .cta-blob {
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            pointer-events: none;
+            background: conic-gradient(from 0deg, rgba(20,184,166,0.12), rgba(168,85,247,0.12), rgba(59,130,246,0.12), rgba(20,184,166,0.12));
+        }
+
+        .reveal { opacity: 0; }
     </style>
 </head>
 <body>
 
+    <div class="grain"></div>
+
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+
+    <nav class="site-nav">
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-white"></span>
+            <span class="display-font tracking-[0.2em] text-sm font-medium">VIBEOCRACY</span>
+        </div>
+        <div class="hidden md:flex gap-10">
+            <a href="#sec-1" class="nav-link" data-nav data-target="#sec-1">Intro</a>
+            <a href="#sec-2" class="nav-link" data-nav data-target="#sec-2">Hierarchy</a>
+            <a href="#sec-3" class="nav-link" data-nav data-target="#sec-3">Spiral</a>
+            <a href="#sec-4" class="nav-link" data-nav data-target="#sec-4">Vibe</a>
+            <a href="#sec-5" class="nav-link" data-nav data-target="#sec-5">Manifesto</a>
+        </div>
+        <a href="https://PRES2028.com" target="_blank" data-hover class="text-xs tracking-[0.2em] uppercase border border-white/20 rounded-full px-4 py-2 hover:bg-white hover:text-black transition-colors duration-300">2028</a>
+    </nav>
+
+    <div class="side-tag hidden lg:flex">
+        <span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+        <span class="label">Intelligence Over Hierarchy</span>
+    </div>
+
+    <div class="section-index hidden md:block">
+        <span id="sec-index">01</span> / 05
+    </div>
+
     <div id="canvas-container"></div>
 
     <main id="content-wrapper">
-        
+
         <!-- SECTION 1: Introduction -->
         <section class="section items-center text-center" id="sec-1">
-            <div class="glass-panel visible mx-auto mt-20">
-                <h2 class="text-sm uppercase tracking-[0.3em] text-gray-400 mb-4">Welcome to the Next Evolution</h2>
-                <h1 class="text-6xl md:text-8xl font-bold display-font mb-6 leading-tight">
-                    VIBE<span class="text-gradient">OCRACY</span>
-                </h1>
-                <p class="text-xl md:text-2xl text-gray-300 font-light mb-8 max-w-2xl mx-auto leading-relaxed">
+            <div class="grid-bg"></div>
+
+            <div class="absolute top-28 left-6 md:left-10 z-10 hidden sm:flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase text-gray-500">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                System Online — Legacy Deprecated
+            </div>
+            <div class="absolute top-28 left-1/2 -translate-x-1/2 z-10 hidden sm:block text-[11px] tracking-[0.35em] uppercase text-gray-500">
+                Made for Minds. Built for Millions.
+            </div>
+
+            <div class="glass-panel mx-auto mt-20 relative z-10" id="hero-panel">
+                <h2 class="text-sm uppercase tracking-[0.3em] text-gray-400 mb-4 reveal" id="hero-eyebrow">Welcome to the Next Evolution</h2>
+                <div class="ov-hidden">
+                    <h1 class="text-6xl md:text-8xl font-bold display-font mb-6 leading-tight" id="hero-title" style="transform: translateY(110%);">
+                        VIBE<span class="text-gradient">OCRACY</span>
+                    </h1>
+                </div>
+                <p class="text-xl md:text-2xl text-gray-300 font-light mb-8 max-w-2xl mx-auto leading-relaxed reveal" id="hero-sub">
                     Intelligence over Hierarchy. The legacy systems are crashing. We are stepping into an era where collective frequency dictates the future.
                 </p>
-                <p class="text-sm text-gray-500 uppercase tracking-widest">Scroll to Traverse the Spiral</p>
+                <p class="text-sm text-gray-500 uppercase tracking-widest reveal" id="hero-cue">Scroll to Traverse the Spiral</p>
             </div>
-            <div class="scroll-indicator opacity-50">
+            <div class="scroll-indicator absolute bottom-10 left-1/2 -translate-x-1/2 opacity-50 z-10">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
             </div>
         </section>
 
         <!-- SECTION 2: Hierarchy (The Problem) -->
-        <section class="section justify-center items-start" id="sec-2">
-            <div class="glass-panel ml-0 md:ml-[10%]">
-                <div class="text-blue-500 mb-2 font-mono text-sm tracking-wider">[ STAGE 1 : THE PYRAMID ]</div>
-                <h2 class="text-4xl md:text-5xl font-bold display-font mb-6">The End of<br>Rigid Architecture</h2>
-                <p class="text-lg text-gray-300 mb-4 leading-relaxed">
-                    For centuries, humanity has organized through strict, top-down hierarchies. A two-party system operating on legacy code. It breeds apathy, limits bandwidth, and fails to capture the true nuance of 300 million sovereign agents.
-                </p>
-                <p class="text-lg text-gray-300 leading-relaxed">
-                    The corporate politician is obsolete. The "black breath" of totalitarian despair is fading. We must upgrade the state.
-                </p>
+        <section class="section" id="sec-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full">
+                <div>
+                    <div class="index-label text-blue-500 mb-3">01 — The Pyramid</div>
+                    <div class="ov-hidden"><h2 class="text-4xl md:text-5xl font-bold display-font mb-6 reveal-line">The End of<br>Rigid Architecture</h2></div>
+                    <p class="text-lg text-gray-300 mb-4 leading-relaxed reveal">
+                        For centuries, humanity has organized through strict, top-down hierarchies. A two-party system operating on legacy code. It breeds apathy, limits bandwidth, and fails to capture the true nuance of 300 million sovereign agents.
+                    </p>
+                    <p class="text-lg text-gray-300 leading-relaxed mb-10 reveal">
+                        The corporate politician is obsolete. The "black breath" of totalitarian despair is fading. We must upgrade the state.
+                    </p>
+                    <div class="flex gap-12">
+                        <div class="reveal">
+                            <div class="stat-num" data-counter data-target="300" data-suffix="M">0</div>
+                            <div class="stat-label">Agents Ignored</div>
+                        </div>
+                        <div class="reveal">
+                            <div class="stat-num" data-counter data-target="2" data-suffix="">0</div>
+                            <div class="stat-label">Parties Running The Code</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center reveal" id="pyramid-wrap">
+                    <svg id="pyramid-svg" viewBox="0 0 300 260" class="w-full max-w-[360px]">
+                        <path class="pyramid-line" d="M150,20 L280,240 L20,240 Z" />
+                        <path class="pyramid-line" d="M73,227 L227,227" />
+                        <path class="pyramid-line" d="M108,150 L192,150" />
+                        <circle cx="150" cy="20" r="4.5" fill="#ef4444" />
+                    </svg>
+                </div>
             </div>
         </section>
 
-        <!-- SECTION 3: Spiral Dynamics -->
-        <section class="section justify-center items-end text-right" id="sec-3">
-            <div class="glass-panel mr-0 md:mr-[10%]">
-                <div class="text-yellow-500 mb-2 font-mono text-sm tracking-wider">[ STAGE 2 : SPIRAL DYNAMICS ]</div>
-                <h2 class="text-4xl md:text-5xl font-bold display-font mb-6"><span class="text-gradient-spiral">Ascending the Spiral</span></h2>
-                <p class="text-lg text-gray-300 mb-4 leading-relaxed">
-                    Applying first principles to human development reveals a clear trajectory. From egocentric power (Red), to rigid order (Blue), to objective achievement (Orange), to pluralistic empathy (Green).
-                </p>
-                <p class="text-lg text-gray-300 leading-relaxed">
-                    But we are entering the <strong>Second Tier</strong> (Yellow/Turquoise). A meta-crisis aware leadership. An era that sees the entire system, fusing civic technology with quantum coherence.
-                </p>
+        <!-- SECTION 3: Spiral Dynamics (pinned horizontal scroll) -->
+        <section class="relative h-screen overflow-hidden flex flex-col justify-center" id="sec-3">
+            <div class="px-[6vw] md:px-[10vw] mb-10 relative z-10">
+                <div class="index-label text-yellow-500 mb-3">02 — Spiral Dynamics</div>
+                <div class="ov-hidden"><h2 class="text-4xl md:text-5xl font-bold display-font reveal-line"><span class="text-gradient-spiral">Ascending the Spiral</span></h2></div>
+                <p class="text-lg text-gray-400 max-w-xl mt-4 reveal">From egocentric power to second-tier, meta-crisis aware systems — six stages, one trajectory.</p>
+            </div>
+
+            <div class="overflow-hidden">
+                <div class="spiral-track flex gap-6 pl-[6vw] md:pl-[10vw] pr-[6vw] md:pr-[10vw]">
+                    <div class="spiral-card" style="border-color: rgba(239,68,68,0.3); background: linear-gradient(160deg, rgba(239,68,68,0.1), transparent);">
+                        <div class="font-mono text-xs text-red-400">01 / RED</div>
+                        <div><h3 class="text-3xl display-font font-bold mb-2">Power</h3><p class="text-gray-400 text-sm leading-relaxed">Egocentric survival. Impulsive, dominance-driven, exploitative.</p></div>
+                    </div>
+                    <div class="spiral-card" style="border-color: rgba(59,130,246,0.3); background: linear-gradient(160deg, rgba(59,130,246,0.1), transparent);">
+                        <div class="font-mono text-xs text-blue-400">02 / BLUE</div>
+                        <div><h3 class="text-3xl display-font font-bold mb-2">Order</h3><p class="text-gray-400 text-sm leading-relaxed">Rigid hierarchy. Rules, duty, and absolute truth above the self.</p></div>
+                    </div>
+                    <div class="spiral-card" style="border-color: rgba(249,115,22,0.3); background: linear-gradient(160deg, rgba(249,115,22,0.1), transparent);">
+                        <div class="font-mono text-xs text-orange-400">03 / ORANGE</div>
+                        <div><h3 class="text-3xl display-font font-bold mb-2">Achievement</h3><p class="text-gray-400 text-sm leading-relaxed">Strategic ambition. Markets, meritocracy, and relentless growth.</p></div>
+                    </div>
+                    <div class="spiral-card" style="border-color: rgba(34,197,94,0.3); background: linear-gradient(160deg, rgba(34,197,94,0.1), transparent);">
+                        <div class="font-mono text-xs text-green-400">04 / GREEN</div>
+                        <div><h3 class="text-3xl display-font font-bold mb-2">Empathy</h3><p class="text-gray-400 text-sm leading-relaxed">Pluralistic consensus. Community, equality, and shared feeling.</p></div>
+                    </div>
+                    <div class="spiral-card" style="border-color: rgba(234,179,8,0.3); background: linear-gradient(160deg, rgba(234,179,8,0.1), transparent);">
+                        <div class="font-mono text-xs text-yellow-400">05 / YELLOW</div>
+                        <div><h3 class="text-3xl display-font font-bold mb-2">Systems</h3><p class="text-gray-400 text-sm leading-relaxed">Integrative flexibility. Complexity itself becomes home.</p></div>
+                    </div>
+                    <div class="spiral-card" style="border-color: rgba(20,184,166,0.3); background: linear-gradient(160deg, rgba(20,184,166,0.1), transparent);">
+                        <div class="font-mono text-xs text-teal-400">06 / TURQUOISE</div>
+                        <div><h3 class="text-3xl display-font font-bold mb-2">Holistic</h3><p class="text-gray-400 text-sm leading-relaxed">Second-tier awareness. Meta-crisis coherent, planetary leadership.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-10 left-[6vw] md:left-[10vw] right-[6vw] md:right-[10vw] spiral-progress-track h-[2px] bg-white/10 z-10">
+                <div class="spiral-progress-fill h-full bg-white"></div>
             </div>
         </section>
 
         <!-- SECTION 4: Vibe / Collective Intelligence -->
-        <section class="section justify-center items-start" id="sec-4">
-            <div class="glass-panel ml-0 md:ml-[10%]">
-                <div class="text-teal-400 mb-2 font-mono text-sm tracking-wider">[ STAGE 3 : THE VIBE NETWORK ]</div>
-                <h2 class="text-4xl md:text-5xl font-bold display-font mb-6">Vibes as the Highest<br><span class="text-gradient">Intelligence</span></h2>
-                <p class="text-lg text-gray-300 mb-4 leading-relaxed">
-                    We don't need a parliament of seven parties; we need 300 million parties. A decentralized trust layer where sense-making happens organically.
-                </p>
-                <p class="text-lg text-gray-300 mb-6 leading-relaxed">
-                    Palantir for the people. A transparent dashboard of fiscal realities. The era of the "Vibe" isn't woo—it's the highest form of distributed computational resonance among humans. It's liquid democracy made real.
-                </p>
-                <div class="inline-block px-6 py-2 border border-teal-500/50 rounded-full text-teal-300 text-sm font-mono bg-teal-500/10">
-                    Legacy is the only internal currency.
+        <section class="section" id="sec-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full mb-16">
+                <div>
+                    <div class="index-label text-teal-400 mb-3">03 — The Vibe Network</div>
+                    <div class="ov-hidden"><h2 class="text-4xl md:text-5xl font-bold display-font mb-6 reveal-line">Vibes as the Highest<br><span class="text-gradient">Intelligence</span></h2></div>
+                    <p class="text-lg text-gray-300 mb-4 leading-relaxed reveal">
+                        We don't need a parliament of seven parties; we need 300 million parties. A decentralized trust layer where sense-making happens organically.
+                    </p>
+                    <p class="text-lg text-gray-300 mb-6 leading-relaxed reveal">
+                        Palantir for the people. A transparent dashboard of fiscal realities. The era of the "Vibe" isn't woo—it's the highest form of distributed computational resonance among humans. It's liquid democracy made real.
+                    </p>
+                    <div class="inline-block px-6 py-2 border border-teal-500/50 rounded-full text-teal-300 text-sm font-mono bg-teal-500/10 reveal">
+                        Legacy is the only internal currency.
+                    </div>
+                </div>
+                <div class="flex justify-center reveal">
+                    <svg viewBox="0 0 400 400" class="w-full max-w-[380px]" id="network-svg">
+                        <g class="net-lines" stroke="rgba(45,212,191,0.45)" stroke-width="1">
+                            <line x1="200" y1="200" x2="90" y2="90" />
+                            <line x1="200" y1="200" x2="310" y2="80" />
+                            <line x1="200" y1="200" x2="330" y2="220" />
+                            <line x1="200" y1="200" x2="260" y2="330" />
+                            <line x1="200" y1="200" x2="120" y2="320" />
+                            <line x1="200" y1="200" x2="60" y2="210" />
+                            <line x1="90" y1="90" x2="310" y2="80" />
+                            <line x1="310" y1="80" x2="330" y2="220" />
+                            <line x1="330" y1="220" x2="260" y2="330" />
+                            <line x1="260" y1="330" x2="120" y2="320" />
+                            <line x1="120" y1="320" x2="60" y2="210" />
+                            <line x1="60" y1="210" x2="90" y2="90" />
+                        </g>
+                        <g class="net-nodes" fill="#2dd4bf">
+                            <circle cx="200" cy="200" r="7" />
+                            <circle cx="90" cy="90" r="4" />
+                            <circle cx="310" cy="80" r="4" />
+                            <circle cx="330" cy="220" r="4" />
+                            <circle cx="260" cy="330" r="4" />
+                            <circle cx="120" cy="320" r="4" />
+                            <circle cx="60" cy="210" r="4" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-6 mb-16">
+                <div class="reveal text-center">
+                    <div class="stat-num" data-counter data-target="300" data-suffix="M">0</div>
+                    <div class="stat-label">Sovereign Nodes</div>
+                </div>
+                <div class="reveal text-center">
+                    <div class="stat-num" data-counter data-target="0" data-suffix="">0</div>
+                    <div class="stat-label">Middlemen</div>
+                </div>
+                <div class="reveal text-center">
+                    <div class="stat-num" data-counter data-target="1" data-suffix="">0</div>
+                    <div class="stat-label">Shared Frequency</div>
+                </div>
+            </div>
+
+            <div class="marquee-wrap py-4 reveal">
+                <div class="marquee-track">
+                    <span>LIQUID DEMOCRACY</span><span class="dim">✦</span>
+                    <span>COLLECTIVE INTELLIGENCE</span><span class="dim">✦</span>
+                    <span>PALANTIR FOR THE PEOPLE</span><span class="dim">✦</span>
+                    <span>SENSE-MAKING AT SCALE</span><span class="dim">✦</span>
+                    <span>LIQUID DEMOCRACY</span><span class="dim">✦</span>
+                    <span>COLLECTIVE INTELLIGENCE</span><span class="dim">✦</span>
+                    <span>PALANTIR FOR THE PEOPLE</span><span class="dim">✦</span>
+                    <span>SENSE-MAKING AT SCALE</span><span class="dim">✦</span>
                 </div>
             </div>
         </section>
@@ -196,52 +507,258 @@
         <!-- SECTION 5: Call to Action -->
         <section class="section items-center text-center justify-center" id="sec-5">
             <div class="glass-panel pulse-glow max-w-3xl mx-auto relative overflow-hidden">
-                <!-- Decorative background elements -->
-                <div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-gradient-to-r from-teal-500/10 via-purple-500/10 to-blue-500/10 rotate-45 pointer-events-none"></div>
-                
-                <h2 class="text-5xl md:text-7xl font-bold display-font mb-6 relative z-10 text-white">
-                    THE EXPONENTIAL<br>CHAPTER
-                </h2>
-                <p class="text-xl md:text-2xl text-gray-300 font-light mb-10 max-w-2xl mx-auto leading-relaxed relative z-10">
+                <div class="cta-blob" id="cta-blob"></div>
+
+                <div class="ov-hidden">
+                    <h2 class="text-5xl md:text-7xl font-bold display-font mb-6 relative z-10 text-white reveal-line">
+                        THE EXPONENTIAL<br>CHAPTER
+                    </h2>
+                </div>
+                <p class="text-xl md:text-2xl text-gray-300 font-light mb-10 max-w-2xl mx-auto leading-relaxed relative z-10 reveal">
                     The next leader of the most powerful nation <strong>must</strong> be the right vibe for the exponential chapter we are entering.
                 </p>
-                
-                <a href="https://PRES2028.com" target="_blank" class="relative z-10 group inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-black bg-white rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)]">
-                    ENTER PRES2028.COM
-                    <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+
+                <a href="https://PRES2028.com" target="_blank" data-magnetic data-hover class="relative z-10 inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-black bg-white rounded-full transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)]">
+                    <span data-magnetic-inner class="inline-flex items-center">
+                        ENTER PRES2028.COM
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </span>
                 </a>
             </div>
         </section>
 
+        <footer class="relative z-10 px-6 md:px-[10vw] py-10 flex flex-col md:flex-row items-center justify-between gap-3 border-t border-white/5 text-[11px] tracking-[0.2em] uppercase text-gray-600">
+            <span>© 2028 Vibeocracy — Intelligence Over Hierarchy</span>
+            <span>No Parties. Just Patterns.</span>
+        </footer>
+
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 
     <script>
-        // --------------------------------------------------------
-        // 1. SCROLL REVEAL LOGIC FOR HTML ELEMENTS
-        // --------------------------------------------------------
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.15
-        };
+        gsap.registerPlugin(ScrollTrigger);
 
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
+        // --------------------------------------------------------
+        // 0. LENIS SMOOTH SCROLL <-> GSAP TICKER
+        // --------------------------------------------------------
+        const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+        window.__lenis = lenis;
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => lenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(0);
+
+        document.querySelectorAll('[data-nav]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.dataset.target);
+                lenis.scrollTo(target, { duration: 1.4 });
             });
-        }, observerOptions);
-
-        document.querySelectorAll('.glass-panel').forEach(panel => {
-            observer.observe(panel);
         });
 
+        // --------------------------------------------------------
+        // 1. CUSTOM CURSOR
+        // --------------------------------------------------------
+        if (window.matchMedia('(pointer: fine)').matches) {
+            const dot = document.querySelector('.cursor-dot');
+            const ring = document.querySelector('.cursor-ring');
+            const setDot = gsap.quickTo(dot, 'x', { duration: 0.1, ease: 'power3' });
+            const setDotY = gsap.quickTo(dot, 'y', { duration: 0.1, ease: 'power3' });
+            const setRing = gsap.quickTo(ring, 'x', { duration: 0.35, ease: 'power3' });
+            const setRingY = gsap.quickTo(ring, 'y', { duration: 0.35, ease: 'power3' });
+
+            window.addEventListener('mousemove', (e) => {
+                setDot(e.clientX); setDotY(e.clientY);
+                setRing(e.clientX); setRingY(e.clientY);
+            });
+
+            document.querySelectorAll('[data-hover], a, button').forEach(el => {
+                el.addEventListener('mouseenter', () => ring.classList.add('is-active'));
+                el.addEventListener('mouseleave', () => ring.classList.remove('is-active'));
+            });
+        }
 
         // --------------------------------------------------------
-        // 2. THREE.JS SCENE SETUP
+        // 2. SCROLL PROGRESS BAR
+        // --------------------------------------------------------
+        gsap.to('.progress-fill', {
+            scaleX: 1,
+            ease: 'none',
+            scrollTrigger: { start: 0, end: 'max', scrub: 0.3 }
+        });
+
+        // --------------------------------------------------------
+        // 3. NAV ACTIVE STATE + BOTTOM INDEX
+        // --------------------------------------------------------
+        const sections = gsap.utils.toArray('.section, #sec-3');
+        const navLinks = gsap.utils.toArray('.nav-link');
+        const indexEl = document.getElementById('sec-index');
+
+        sections.forEach((sec, i) => {
+            ScrollTrigger.create({
+                trigger: sec,
+                start: 'top center',
+                end: 'bottom center',
+                onToggle: (self) => {
+                    if (!self.isActive) return;
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    const link = document.querySelector(`.nav-link[data-target="#${sec.id}"]`);
+                    if (link) link.classList.add('active');
+                    indexEl.textContent = String(i + 1).padStart(2, '0');
+                }
+            });
+        });
+
+        // --------------------------------------------------------
+        // 4. HERO INTRO ANIMATION
+        // --------------------------------------------------------
+        window.addEventListener('load', () => {
+            const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+            tl.to('#hero-title', { y: '0%', duration: 1.2 })
+              .to('#hero-eyebrow', { opacity: 1, duration: 0.8 }, '-=0.9')
+              .to('#hero-sub', { opacity: 1, y: 0, duration: 0.9 }, '-=0.7')
+              .to('#hero-cue', { opacity: 1, duration: 0.8 }, '-=0.6');
+            animate();
+        });
+        gsap.set(['#hero-sub', '#hero-cue'], { y: 20 });
+
+        // --------------------------------------------------------
+        // 5. GENERIC REVEAL-ON-SCROLL (fade + rise)
+        // --------------------------------------------------------
+        gsap.utils.toArray('.reveal').forEach(el => {
+            gsap.fromTo(el, { y: 50, opacity: 0 }, {
+                y: 0, opacity: 1, duration: 1, ease: 'power3.out',
+                scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
+            });
+        });
+
+        gsap.utils.toArray('.reveal-line').forEach(el => {
+            gsap.fromTo(el, { yPercent: 110 }, {
+                yPercent: 0, duration: 1, ease: 'power4.out',
+                scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' }
+            });
+        });
+
+        // --------------------------------------------------------
+        // 6. COUNTERS
+        // --------------------------------------------------------
+        gsap.utils.toArray('[data-counter]').forEach(el => {
+            const target = parseFloat(el.dataset.target);
+            const suffix = el.dataset.suffix || '';
+            const obj = { val: 0 };
+            ScrollTrigger.create({
+                trigger: el,
+                start: 'top 85%',
+                onEnter: () => gsap.to(obj, {
+                    val: target, duration: 1.6, ease: 'power2.out',
+                    onUpdate: () => el.textContent = Math.round(obj.val) + suffix
+                }),
+                once: true
+            });
+        });
+
+        // --------------------------------------------------------
+        // 7. PYRAMID DRAW (sec-2)
+        // --------------------------------------------------------
+        document.querySelectorAll('#pyramid-svg .pyramid-line').forEach(path => {
+            const len = path.getTotalLength();
+            path.style.strokeDasharray = len;
+            path.style.strokeDashoffset = len;
+        });
+        gsap.to('#pyramid-svg .pyramid-line', {
+            strokeDashoffset: 0,
+            duration: 1.5,
+            ease: 'power2.inOut',
+            stagger: 0.15,
+            scrollTrigger: { trigger: '#pyramid-wrap', start: 'top 80%', toggleActions: 'play none none reverse' }
+        });
+
+        // --------------------------------------------------------
+        // 8. NETWORK GRAPH DRAW + PULSE (sec-4)
+        // --------------------------------------------------------
+        document.querySelectorAll('#network-svg .net-lines line').forEach(line => {
+            const len = Math.hypot(line.x2.baseVal.value - line.x1.baseVal.value, line.y2.baseVal.value - line.y1.baseVal.value);
+            line.style.strokeDasharray = len;
+            line.style.strokeDashoffset = len;
+        });
+        gsap.to('#network-svg .net-lines line', {
+            strokeDashoffset: 0, duration: 1, stagger: 0.06, ease: 'power2.out',
+            scrollTrigger: { trigger: '#network-svg', start: 'top 80%', toggleActions: 'play none none reverse' }
+        });
+        gsap.fromTo('#network-svg .net-nodes circle', { scale: 0, transformOrigin: '50% 50%' }, {
+            scale: 1, duration: 0.6, stagger: 0.06, ease: 'back.out(3)',
+            scrollTrigger: { trigger: '#network-svg', start: 'top 80%', toggleActions: 'play none none reverse' }
+        });
+        gsap.to('#network-svg .net-nodes circle', { opacity: 0.4, duration: 1.4, repeat: -1, yoyo: true, stagger: { each: 0.2, repeat: -1, yoyo: true } });
+
+        // --------------------------------------------------------
+        // 9. SPIRAL PINNED HORIZONTAL SCROLL (sec-3)
+        // --------------------------------------------------------
+        ScrollTrigger.matchMedia({
+            "(min-width: 768px)": function () {
+                const track = document.querySelector('.spiral-track');
+                const getDistance = () => track.scrollWidth - window.innerWidth;
+
+                gsap.to(track, {
+                    x: () => -getDistance(),
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: '#sec-3',
+                        start: 'top top',
+                        end: () => '+=' + getDistance(),
+                        scrub: 0.6,
+                        pin: true,
+                        invalidateOnRefresh: true,
+                        onUpdate: (self) => {
+                            document.querySelector('.spiral-progress-fill').style.width = (self.progress * 100) + '%';
+                        }
+                    }
+                });
+            },
+            "(max-width: 767px)": function () {
+                const track = document.querySelector('.spiral-track');
+                track.style.overflowX = 'auto';
+                gsap.to('.spiral-card', {
+                    opacity: 1, y: 0, stagger: 0.1,
+                    scrollTrigger: { trigger: '#sec-3', start: 'top 60%' }
+                });
+            }
+        });
+
+        // --------------------------------------------------------
+        // 10. MARQUEE (sec-4)
+        // --------------------------------------------------------
+        gsap.to('.marquee-track', { xPercent: -50, duration: 22, ease: 'linear', repeat: -1 });
+
+        // --------------------------------------------------------
+        // 11. MAGNETIC CTA BUTTON
+        // --------------------------------------------------------
+        document.querySelectorAll('[data-magnetic]').forEach(btn => {
+            const inner = btn.querySelector('[data-magnetic-inner]') || btn;
+            const setX = gsap.quickTo(btn, 'x', { duration: 0.5, ease: 'power3' });
+            const setY = gsap.quickTo(btn, 'y', { duration: 0.5, ease: 'power3' });
+            const setInnerX = gsap.quickTo(inner, 'x', { duration: 0.5, ease: 'power3' });
+            const setInnerY = gsap.quickTo(inner, 'y', { duration: 0.5, ease: 'power3' });
+
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const relX = e.clientX - rect.left - rect.width / 2;
+                const relY = e.clientY - rect.top - rect.height / 2;
+                setX(relX * 0.35); setY(relY * 0.35);
+                setInnerX(relX * 0.15); setInnerY(relY * 0.15);
+            });
+            btn.addEventListener('mouseleave', () => {
+                setX(0); setY(0); setInnerX(0); setInnerY(0);
+            });
+        });
+
+        gsap.to('#cta-blob', { rotation: 360, duration: 24, repeat: -1, ease: 'none', transformOrigin: '50% 50%' });
+
+        // --------------------------------------------------------
+        // 12. THREE.JS SCENE SETUP
         // --------------------------------------------------------
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
@@ -253,154 +770,128 @@
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize for high DPI
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
         // --------------------------------------------------------
-        // 3. PARTICLE SYSTEM GENERATION (First Principles Math)
+        // 13. PARTICLE SYSTEM GENERATION (First Principles Math)
         // --------------------------------------------------------
         const particleCount = 12000;
-        
-        // Geometry to hold our moving particles
         const geometry = new THREE.BufferGeometry();
-        
-        // Arrays for different states
+
         const currentPositions = new Float32Array(particleCount * 3);
         const currentColors = new Float32Array(particleCount * 3);
-        
+
         const posHierarchy = new Float32Array(particleCount * 3);
         const colHierarchy = new Float32Array(particleCount * 3);
-        
+
         const posSpiral = new Float32Array(particleCount * 3);
         const colSpiral = new Float32Array(particleCount * 3);
-        
+
         const posVibe = new Float32Array(particleCount * 3);
         const colVibe = new Float32Array(particleCount * 3);
 
         const sizes = new Float32Array(particleCount);
-
-        // Helper functions for colors
         const color = new THREE.Color();
-        
-        // Generate State 1: The Pyramid (Hierarchy / Blue-Orange)
-        // A rigid 3D pyramid structure
+
         let pIndex = 0;
         const pyramidBase = 80;
         const pyramidHeight = 80;
-        
+
         for (let i = 0; i < particleCount; i++) {
-            // Pyramid distribution
-            let yLayer = Math.random(); // 0 to 1
+            let yLayer = Math.random();
             let currentWidth = pyramidBase * (1 - yLayer);
-            
+
             let px = (Math.random() - 0.5) * currentWidth;
-            let py = (yLayer * pyramidHeight) - (pyramidHeight/2);
+            let py = (yLayer * pyramidHeight) - (pyramidHeight / 2);
             let pz = (Math.random() - 0.5) * currentWidth;
-            
+
             posHierarchy[pIndex] = px;
             posHierarchy[pIndex + 1] = py;
             posHierarchy[pIndex + 2] = pz;
-            
-            // Rigid colors (Blues, dark purples, greys)
+
             let colorIntensity = 0.2 + (yLayer * 0.8);
-            if(Math.random() > 0.8) {
-                color.setHex(0xef4444); // Occasional Red (Power)
+            if (Math.random() > 0.8) {
+                color.setHex(0xef4444);
             } else {
-                color.setHSL(0.6, 0.8, colorIntensity * 0.5); // Blue (Order/Hierarchy)
+                color.setHSL(0.6, 0.8, colorIntensity * 0.5);
             }
-            
+
             colHierarchy[pIndex] = color.r;
             colHierarchy[pIndex + 1] = color.g;
             colHierarchy[pIndex + 2] = color.b;
-            
-            // Randomly sized particles
+
             sizes[i] = Math.random() * 2.0 + 0.5;
-            
             pIndex += 3;
         }
 
-        // Generate State 2: Spiral Dynamics (Evolution of Consciousness)
-        // A sweeping double helix / funnel
         pIndex = 0;
         for (let i = 0; i < particleCount; i++) {
-            let t = i / particleCount; // 0 to 1
-            let angle = t * Math.PI * 20; // Multiple rotations
-            let radius = 10 + (t * 40); // Expanding radius
-            
-            // Add some noise for organic feel
+            let t = i / particleCount;
+            let angle = t * Math.PI * 20;
+            let radius = 10 + (t * 40);
+
             let noiseX = (Math.random() - 0.5) * 5;
             let noiseY = (Math.random() - 0.5) * 5;
             let noiseZ = (Math.random() - 0.5) * 5;
-            
+
             posSpiral[pIndex] = Math.cos(angle) * radius + noiseX;
-            posSpiral[pIndex + 1] = (t * 120) - 60 + noiseY; // Spread along Y
+            posSpiral[pIndex + 1] = (t * 120) - 60 + noiseY;
             posSpiral[pIndex + 2] = Math.sin(angle) * radius + noiseZ;
-            
-            // Spiral Dynamics Colors based on height (t)
-            // Beige -> Purple -> Red -> Blue -> Orange -> Green -> Yellow -> Turquoise
-            if (t < 0.15) color.setHex(0xef4444); // Red
-            else if (t < 0.3) color.setHex(0x3b82f6); // Blue
-            else if (t < 0.45) color.setHex(0xf97316); // Orange
-            else if (t < 0.6) color.setHex(0x22c55e); // Green
-            else if (t < 0.8) color.setHex(0xeab308); // Yellow
-            else color.setHex(0x14b8a6); // Turquoise
-            
-            // Add slight variation
+
+            if (t < 0.15) color.setHex(0xef4444);
+            else if (t < 0.3) color.setHex(0x3b82f6);
+            else if (t < 0.45) color.setHex(0xf97316);
+            else if (t < 0.6) color.setHex(0x22c55e);
+            else if (t < 0.8) color.setHex(0xeab308);
+            else color.setHex(0x14b8a6);
+
             color.lerp(new THREE.Color(0xffffff), Math.random() * 0.2);
 
             colSpiral[pIndex] = color.r;
             colSpiral[pIndex + 1] = color.g;
             colSpiral[pIndex + 2] = color.b;
-            
+
             pIndex += 3;
         }
 
-        // Generate State 3: Vibe Network (Collective Intelligence)
-        // A complex, interconnected brain/sphere pattern
         pIndex = 0;
         for (let i = 0; i < particleCount; i++) {
-            // Distribute on a sphere with noise
             let u = Math.random();
             let v = Math.random();
             let theta = u * 2.0 * Math.PI;
             let phi = Math.acos(2.0 * v - 1.0);
-            let r = 50 + (Math.random() * 20); // Thick shell
-            
+            let r = 50 + (Math.random() * 20);
+
             let px = r * Math.sin(phi) * Math.cos(theta);
             let py = r * Math.sin(phi) * Math.sin(theta);
             let pz = r * Math.cos(phi);
-            
+
             posVibe[pIndex] = px;
             posVibe[pIndex + 1] = py;
             posVibe[pIndex + 2] = pz;
-            
-            // Vibrant, interconnected colors (Turquoise, Purple, Magenta)
-            let vibeHue = 0.5 + (Math.random() * 0.4); // 0.5 to 0.9 (Teal to Magenta)
+
+            let vibeHue = 0.5 + (Math.random() * 0.4);
             color.setHSL(vibeHue, 0.9, 0.6);
-            
+
             colVibe[pIndex] = color.r;
             colVibe[pIndex + 1] = color.g;
             colVibe[pIndex + 2] = color.b;
-            
+
             pIndex += 3;
         }
 
-        // Initialize current arrays with State 1 (Hierarchy)
-        for(let i=0; i<currentPositions.length; i++) {
+        for (let i = 0; i < currentPositions.length; i++) {
             currentPositions[i] = posHierarchy[i];
             currentColors[i] = colHierarchy[i];
         }
 
-        // Apply attributes to geometry
         geometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
         geometry.setAttribute('color', new THREE.BufferAttribute(currentColors, 3));
         geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-        // Create custom shader material to use the size attribute and make particles circular/glowy
         const particleMaterial = new THREE.ShaderMaterial({
-            uniforms: {
-                time: { value: 0.0 }
-            },
+            uniforms: { time: { value: 0.0 } },
             vertexShader: `
                 attribute float size;
                 varying vec3 vColor;
@@ -414,10 +905,9 @@
             fragmentShader: `
                 varying vec3 vColor;
                 void main() {
-                    // Make it circular with a soft edge (glow)
                     float d = distance(gl_PointCoord, vec2(0.5, 0.5));
                     if(d > 0.5) discard;
-                    float alpha = (0.5 - d) * 2.0; // soft fade
+                    float alpha = (0.5 - d) * 2.0;
                     gl_FragColor = vec4(vColor, alpha * 0.8);
                 }
             `,
@@ -431,26 +921,19 @@
         scene.add(particleSystem);
 
         // --------------------------------------------------------
-        // 4. SCROLL INTERPOLATION & ANIMATION
+        // 14. SCROLL INTERPOLATION & ANIMATION
         // --------------------------------------------------------
         let scrollProgress = 0;
         let targetScrollProgress = 0;
 
-        // Calculate scroll percentage
         function onScroll() {
             const scrollTop = window.scrollY || document.documentElement.scrollTop;
             const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
             targetScrollProgress = scrollTop / maxScroll;
         }
-
         window.addEventListener('scroll', onScroll, { passive: true });
 
-        // Add mouse interaction (Vibes react to cursor)
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetMouseX = 0;
-        let targetMouseY = 0;
-
+        let mouseX = 0, mouseY = 0, targetMouseX = 0, targetMouseY = 0;
         document.addEventListener('mousemove', (event) => {
             targetMouseX = (event.clientX / window.innerWidth) * 2 - 1;
             targetMouseY = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -460,110 +943,73 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            
             const elapsedTime = clock.getElapsedTime();
 
-            // Smooth scroll progress interpolation
             scrollProgress += (targetScrollProgress - scrollProgress) * 0.05;
-            
-            // Smooth mouse interpolation
             mouseX += (targetMouseX - mouseX) * 0.05;
             mouseY += (targetMouseY - mouseY) * 0.05;
 
-            // Interpolate Positions and Colors based on Scroll
             const positions = particleSystem.geometry.attributes.position.array;
             const colors = particleSystem.geometry.attributes.color.array;
 
-            // Define transition points
-            // 0.0 to 0.33: Hierarchy
-            // 0.33 to 0.66: Transition to Spiral
-            // 0.66 to 1.0: Transition to Vibe
-            
-            let stage1Weight = 0;
-            let stage2Weight = 0;
-            let stage3Weight = 0;
+            let stage1Weight = 0, stage2Weight = 0, stage3Weight = 0;
 
             if (scrollProgress < 0.4) {
-                // Morph 1: Hierarchy to Spiral
-                let p = scrollProgress / 0.4; 
-                // Easing function for smoother morph
+                let p = scrollProgress / 0.4;
                 p = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
-                
-                stage1Weight = 1 - p;
-                stage2Weight = p;
-                stage3Weight = 0;
+                stage1Weight = 1 - p; stage2Weight = p; stage3Weight = 0;
             } else {
-                // Morph 2: Spiral to Vibe
                 let p = (scrollProgress - 0.4) / 0.6;
-                p = Math.min(Math.max(p, 0), 1); // clamp
+                p = Math.min(Math.max(p, 0), 1);
                 p = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
-
-                stage1Weight = 0;
-                stage2Weight = 1 - p;
-                stage3Weight = p;
+                stage1Weight = 0; stage2Weight = 1 - p; stage3Weight = p;
             }
 
-            // Apply interpolation and dynamic movement
-            for (let i = 0; i < particleCount * 3; i+=3) {
-                
-                // Base target positions from the 3 states
+            for (let i = 0; i < particleCount * 3; i += 3) {
                 let targetX = posHierarchy[i] * stage1Weight + posSpiral[i] * stage2Weight + posVibe[i] * stage3Weight;
-                let targetY = posHierarchy[i+1] * stage1Weight + posSpiral[i+1] * stage2Weight + posVibe[i+1] * stage3Weight;
-                let targetZ = posHierarchy[i+2] * stage1Weight + posSpiral[i+2] * stage2Weight + posVibe[i+2] * stage3Weight;
+                let targetY = posHierarchy[i + 1] * stage1Weight + posSpiral[i + 1] * stage2Weight + posVibe[i + 1] * stage3Weight;
+                let targetZ = posHierarchy[i + 2] * stage1Weight + posSpiral[i + 2] * stage2Weight + posVibe[i + 2] * stage3Weight;
 
-                // Add dynamic breathing/waving based on the state
-                // Vibe state has more chaotic, organic movement
                 if (stage3Weight > 0) {
                     let noise = Math.sin(elapsedTime * 2.0 + targetX * 0.05) * 2.0 * stage3Weight;
                     targetX += Math.cos(elapsedTime + targetY * 0.05) * noise;
                     targetY += Math.sin(elapsedTime + targetZ * 0.05) * noise;
                 }
 
-                // Update actual positions
                 positions[i] = targetX;
-                positions[i+1] = targetY;
-                positions[i+2] = targetZ;
+                positions[i + 1] = targetY;
+                positions[i + 2] = targetZ;
 
-                // Interpolate colors
                 colors[i] = colHierarchy[i] * stage1Weight + colSpiral[i] * stage2Weight + colVibe[i] * stage3Weight;
-                colors[i+1] = colHierarchy[i+1] * stage1Weight + colSpiral[i+1] * stage2Weight + colVibe[i+1] * stage3Weight;
-                colors[i+2] = colHierarchy[i+2] * stage1Weight + colSpiral[i+2] * stage2Weight + colVibe[i+2] * stage3Weight;
+                colors[i + 1] = colHierarchy[i + 1] * stage1Weight + colSpiral[i + 1] * stage2Weight + colVibe[i + 1] * stage3Weight;
+                colors[i + 2] = colHierarchy[i + 2] * stage1Weight + colSpiral[i + 2] * stage2Weight + colVibe[i + 2] * stage3Weight;
             }
 
             particleSystem.geometry.attributes.position.needsUpdate = true;
             particleSystem.geometry.attributes.color.needsUpdate = true;
 
-            // Camera movement based on scroll and mouse
-            // Move camera up and zoom in slightly as we scroll
             camera.position.y = 20 + (scrollProgress * 20);
             camera.position.z = 120 - (scrollProgress * 40);
-            
-            // Add subtle parallax with mouse
             camera.position.x = mouseX * 10;
             camera.position.y += mouseY * 5;
-            
             camera.lookAt(0, scrollProgress * 20, 0);
 
-            // Rotate the entire system slowly
             particleSystem.rotation.y = elapsedTime * 0.05 + (scrollProgress * Math.PI);
 
             renderer.render(scene, camera);
         }
 
         // --------------------------------------------------------
-        // 5. RESIZE HANDLER
+        // 15. RESIZE HANDLER
         // --------------------------------------------------------
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            ScrollTrigger.refresh();
         });
 
-        // Start Animation Loop
-        window.onload = function() {
-            animate();
-        };
-
+        window.addEventListener('load', () => ScrollTrigger.refresh());
     </script>
 </body>
 </html>

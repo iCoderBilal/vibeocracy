@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIBEOCRACY | Intelligence Over Hierarchy</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #050505;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4, h5, .display-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* The canvas stays fixed in the background */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none; /* Let clicks pass through to content */
+        }
+
+        /* Content scrolls over the canvas */
+        #content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        .section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem 10vw;
+            position: relative;
+        }
+
+        .glass-panel {
+            background: rgba(10, 10, 10, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 800px;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-panel.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .text-gradient-spiral {
+            background: linear-gradient(to right, #ef4444, #3b82f6, #f97316, #22c55e, #eab308, #14b8a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-20px) translateX(-50%); }
+            60% { transform: translateY(-10px) translateX(-50%); }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 3s infinite alternate;
+        }
+        
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 20px rgba(79, 172, 254, 0.2); }
+            100% { box-shadow: 0 0 40px rgba(240, 147, 251, 0.4); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <main id="content-wrapper">
+        
+        <!-- SECTION 1: Introduction -->
+        <section class="section items-center text-center" id="sec-1">
+            <div class="glass-panel visible mx-auto mt-20">
+                <h2 class="text-sm uppercase tracking-[0.3em] text-gray-400 mb-4">Welcome to the Next Evolution</h2>
+                <h1 class="text-6xl md:text-8xl font-bold display-font mb-6 leading-tight">
+                    VIBE<span class="text-gradient">OCRACY</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 font-light mb-8 max-w-2xl mx-auto leading-relaxed">
+                    Intelligence over Hierarchy. The legacy systems are crashing. We are stepping into an era where collective frequency dictates the future.
+                </p>
+                <p class="text-sm text-gray-500 uppercase tracking-widest">Scroll to Traverse the Spiral</p>
+            </div>
+            <div class="scroll-indicator opacity-50">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Hierarchy (The Problem) -->
+        <section class="section justify-center items-start" id="sec-2">
+            <div class="glass-panel ml-0 md:ml-[10%]">
+                <div class="text-blue-500 mb-2 font-mono text-sm tracking-wider">[ STAGE 1 : THE PYRAMID ]</div>
+                <h2 class="text-4xl md:text-5xl font-bold display-font mb-6">The End of<br>Rigid Architecture</h2>
+                <p class="text-lg text-gray-300 mb-4 leading-relaxed">
+                    For centuries, humanity has organized through strict, top-down hierarchies. A two-party system operating on legacy code. It breeds apathy, limits bandwidth, and fails to capture the true nuance of 300 million sovereign agents.
+                </p>
+                <p class="text-lg text-gray-300 leading-relaxed">
+                    The corporate politician is obsolete. The "black breath" of totalitarian despair is fading. We must upgrade the state.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Spiral Dynamics -->
+        <section class="section justify-center items-end text-right" id="sec-3">
+            <div class="glass-panel mr-0 md:mr-[10%]">
+                <div class="text-yellow-500 mb-2 font-mono text-sm tracking-wider">[ STAGE 2 : SPIRAL DYNAMICS ]</div>
+                <h2 class="text-4xl md:text-5xl font-bold display-font mb-6"><span class="text-gradient-spiral">Ascending the Spiral</span></h2>
+                <p class="text-lg text-gray-300 mb-4 leading-relaxed">
+                    Applying first principles to human development reveals a clear trajectory. From egocentric power (Red), to rigid order (Blue), to objective achievement (Orange), to pluralistic empathy (Green).
+                </p>
+                <p class="text-lg text-gray-300 leading-relaxed">
+                    But we are entering the <strong>Second Tier</strong> (Yellow/Turquoise). A meta-crisis aware leadership. An era that sees the entire system, fusing civic technology with quantum coherence.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Vibe / Collective Intelligence -->
+        <section class="section justify-center items-start" id="sec-4">
+            <div class="glass-panel ml-0 md:ml-[10%]">
+                <div class="text-teal-400 mb-2 font-mono text-sm tracking-wider">[ STAGE 3 : THE VIBE NETWORK ]</div>
+                <h2 class="text-4xl md:text-5xl font-bold display-font mb-6">Vibes as the Highest<br><span class="text-gradient">Intelligence</span></h2>
+                <p class="text-lg text-gray-300 mb-4 leading-relaxed">
+                    We don't need a parliament of seven parties; we need 300 million parties. A decentralized trust layer where sense-making happens organically.
+                </p>
+                <p class="text-lg text-gray-300 mb-6 leading-relaxed">
+                    Palantir for the people. A transparent dashboard of fiscal realities. The era of the "Vibe" isn't woo—it's the highest form of distributed computational resonance among humans. It's liquid democracy made real.
+                </p>
+                <div class="inline-block px-6 py-2 border border-teal-500/50 rounded-full text-teal-300 text-sm font-mono bg-teal-500/10">
+                    Legacy is the only internal currency.
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Call to Action -->
+        <section class="section items-center text-center justify-center" id="sec-5">
+            <div class="glass-panel pulse-glow max-w-3xl mx-auto relative overflow-hidden">
+                <!-- Decorative background elements -->
+                <div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-gradient-to-r from-teal-500/10 via-purple-500/10 to-blue-500/10 rotate-45 pointer-events-none"></div>
+                
+                <h2 class="text-5xl md:text-7xl font-bold display-font mb-6 relative z-10 text-white">
+                    THE EXPONENTIAL<br>CHAPTER
+                </h2>
+                <p class="text-xl md:text-2xl text-gray-300 font-light mb-10 max-w-2xl mx-auto leading-relaxed relative z-10">
+                    The next leader of the most powerful nation <strong>must</strong> be the right vibe for the exponential chapter we are entering.
+                </p>
+                
+                <a href="https://PRES2028.com" target="_blank" class="relative z-10 group inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-black bg-white rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)]">
+                    ENTER PRES2028.COM
+                    <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // --------------------------------------------------------
+        // 1. SCROLL REVEAL LOGIC FOR HTML ELEMENTS
+        // --------------------------------------------------------
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.glass-panel').forEach(panel => {
+            observer.observe(panel);
+        });
+
+
+        // --------------------------------------------------------
+        // 2. THREE.JS SCENE SETUP
+        // --------------------------------------------------------
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050505, 0.002);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 120;
+        camera.position.y = 20;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize for high DPI
+        container.appendChild(renderer.domElement);
+
+        // --------------------------------------------------------
+        // 3. PARTICLE SYSTEM GENERATION (First Principles Math)
+        // --------------------------------------------------------
+        const particleCount = 12000;
+        
+        // Geometry to hold our moving particles
+        const geometry = new THREE.BufferGeometry();
+        
+        // Arrays for different states
+        const currentPositions = new Float32Array(particleCount * 3);
+        const currentColors = new Float32Array(particleCount * 3);
+        
+        const posHierarchy = new Float32Array(particleCount * 3);
+        const colHierarchy = new Float32Array(particleCount * 3);
+        
+        const posSpiral = new Float32Array(particleCount * 3);
+        const colSpiral = new Float32Array(particleCount * 3);
+        
+        const posVibe = new Float32Array(particleCount * 3);
+        const colVibe = new Float32Array(particleCount * 3);
+
+        const sizes = new Float32Array(particleCount);
+
+        // Helper functions for colors
+        const color = new THREE.Color();
+        
+        // Generate State 1: The Pyramid (Hierarchy / Blue-Orange)
+        // A rigid 3D pyramid structure
+        let pIndex = 0;
+        const pyramidBase = 80;
+        const pyramidHeight = 80;
+        
+        for (let i = 0; i < particleCount; i++) {
+            // Pyramid distribution
+            let yLayer = Math.random(); // 0 to 1
+            let currentWidth = pyramidBase * (1 - yLayer);
+            
+            let px = (Math.random() - 0.5) * currentWidth;
+            let py = (yLayer * pyramidHeight) - (pyramidHeight/2);
+            let pz = (Math.random() - 0.5) * currentWidth;
+            
+            posHierarchy[pIndex] = px;
+            posHierarchy[pIndex + 1] = py;
+            posHierarchy[pIndex + 2] = pz;
+            
+            // Rigid colors (Blues, dark purples, greys)
+            let colorIntensity = 0.2 + (yLayer * 0.8);
+            if(Math.random() > 0.8) {
+                color.setHex(0xef4444); // Occasional Red (Power)
+            } else {
+                color.setHSL(0.6, 0.8, colorIntensity * 0.5); // Blue (Order/Hierarchy)
+            }
+            
+            colHierarchy[pIndex] = color.r;
+            colHierarchy[pIndex + 1] = color.g;
+            colHierarchy[pIndex + 2] = color.b;
+            
+            // Randomly sized particles
+            sizes[i] = Math.random() * 2.0 + 0.5;
+            
+            pIndex += 3;
+        }
+
+        // Generate State 2: Spiral Dynamics (Evolution of Consciousness)
+        // A sweeping double helix / funnel
+        pIndex = 0;
+        for (let i = 0; i < particleCount; i++) {
+            let t = i / particleCount; // 0 to 1
+            let angle = t * Math.PI * 20; // Multiple rotations
+            let radius = 10 + (t * 40); // Expanding radius
+            
+            // Add some noise for organic feel
+            let noiseX = (Math.random() - 0.5) * 5;
+            let noiseY = (Math.random() - 0.5) * 5;
+            let noiseZ = (Math.random() - 0.5) * 5;
+            
+            posSpiral[pIndex] = Math.cos(angle) * radius + noiseX;
+            posSpiral[pIndex + 1] = (t * 120) - 60 + noiseY; // Spread along Y
+            posSpiral[pIndex + 2] = Math.sin(angle) * radius + noiseZ;
+            
+            // Spiral Dynamics Colors based on height (t)
+            // Beige -> Purple -> Red -> Blue -> Orange -> Green -> Yellow -> Turquoise
+            if (t < 0.15) color.setHex(0xef4444); // Red
+            else if (t < 0.3) color.setHex(0x3b82f6); // Blue
+            else if (t < 0.45) color.setHex(0xf97316); // Orange
+            else if (t < 0.6) color.setHex(0x22c55e); // Green
+            else if (t < 0.8) color.setHex(0xeab308); // Yellow
+            else color.setHex(0x14b8a6); // Turquoise
+            
+            // Add slight variation
+            color.lerp(new THREE.Color(0xffffff), Math.random() * 0.2);
+
+            colSpiral[pIndex] = color.r;
+            colSpiral[pIndex + 1] = color.g;
+            colSpiral[pIndex + 2] = color.b;
+            
+            pIndex += 3;
+        }
+
+        // Generate State 3: Vibe Network (Collective Intelligence)
+        // A complex, interconnected brain/sphere pattern
+        pIndex = 0;
+        for (let i = 0; i < particleCount; i++) {
+            // Distribute on a sphere with noise
+            let u = Math.random();
+            let v = Math.random();
+            let theta = u * 2.0 * Math.PI;
+            let phi = Math.acos(2.0 * v - 1.0);
+            let r = 50 + (Math.random() * 20); // Thick shell
+            
+            let px = r * Math.sin(phi) * Math.cos(theta);
+            let py = r * Math.sin(phi) * Math.sin(theta);
+            let pz = r * Math.cos(phi);
+            
+            posVibe[pIndex] = px;
+            posVibe[pIndex + 1] = py;
+            posVibe[pIndex + 2] = pz;
+            
+            // Vibrant, interconnected colors (Turquoise, Purple, Magenta)
+            let vibeHue = 0.5 + (Math.random() * 0.4); // 0.5 to 0.9 (Teal to Magenta)
+            color.setHSL(vibeHue, 0.9, 0.6);
+            
+            colVibe[pIndex] = color.r;
+            colVibe[pIndex + 1] = color.g;
+            colVibe[pIndex + 2] = color.b;
+            
+            pIndex += 3;
+        }
+
+        // Initialize current arrays with State 1 (Hierarchy)
+        for(let i=0; i<currentPositions.length; i++) {
+            currentPositions[i] = posHierarchy[i];
+            currentColors[i] = colHierarchy[i];
+        }
+
+        // Apply attributes to geometry
+        geometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(currentColors, 3));
+        geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+        // Create custom shader material to use the size attribute and make particles circular/glowy
+        const particleMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                time: { value: 0.0 }
+            },
+            vertexShader: `
+                attribute float size;
+                varying vec3 vColor;
+                void main() {
+                    vColor = color;
+                    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                    gl_PointSize = size * (300.0 / -mvPosition.z);
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            `,
+            fragmentShader: `
+                varying vec3 vColor;
+                void main() {
+                    // Make it circular with a soft edge (glow)
+                    float d = distance(gl_PointCoord, vec2(0.5, 0.5));
+                    if(d > 0.5) discard;
+                    float alpha = (0.5 - d) * 2.0; // soft fade
+                    gl_FragColor = vec4(vColor, alpha * 0.8);
+                }
+            `,
+            transparent: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+            vertexColors: true
+        });
+
+        const particleSystem = new THREE.Points(geometry, particleMaterial);
+        scene.add(particleSystem);
+
+        // --------------------------------------------------------
+        // 4. SCROLL INTERPOLATION & ANIMATION
+        // --------------------------------------------------------
+        let scrollProgress = 0;
+        let targetScrollProgress = 0;
+
+        // Calculate scroll percentage
+        function onScroll() {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            targetScrollProgress = scrollTop / maxScroll;
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        // Add mouse interaction (Vibes react to cursor)
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetMouseX = 0;
+        let targetMouseY = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            targetMouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            targetMouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const elapsedTime = clock.getElapsedTime();
+
+            // Smooth scroll progress interpolation
+            scrollProgress += (targetScrollProgress - scrollProgress) * 0.05;
+            
+            // Smooth mouse interpolation
+            mouseX += (targetMouseX - mouseX) * 0.05;
+            mouseY += (targetMouseY - mouseY) * 0.05;
+
+            // Interpolate Positions and Colors based on Scroll
+            const positions = particleSystem.geometry.attributes.position.array;
+            const colors = particleSystem.geometry.attributes.color.array;
+
+            // Define transition points
+            // 0.0 to 0.33: Hierarchy
+            // 0.33 to 0.66: Transition to Spiral
+            // 0.66 to 1.0: Transition to Vibe
+            
+            let stage1Weight = 0;
+            let stage2Weight = 0;
+            let stage3Weight = 0;
+
+            if (scrollProgress < 0.4) {
+                // Morph 1: Hierarchy to Spiral
+                let p = scrollProgress / 0.4; 
+                // Easing function for smoother morph
+                p = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+                
+                stage1Weight = 1 - p;
+                stage2Weight = p;
+                stage3Weight = 0;
+            } else {
+                // Morph 2: Spiral to Vibe
+                let p = (scrollProgress - 0.4) / 0.6;
+                p = Math.min(Math.max(p, 0), 1); // clamp
+                p = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+
+                stage1Weight = 0;
+                stage2Weight = 1 - p;
+                stage3Weight = p;
+            }
+
+            // Apply interpolation and dynamic movement
+            for (let i = 0; i < particleCount * 3; i+=3) {
+                
+                // Base target positions from the 3 states
+                let targetX = posHierarchy[i] * stage1Weight + posSpiral[i] * stage2Weight + posVibe[i] * stage3Weight;
+                let targetY = posHierarchy[i+1] * stage1Weight + posSpiral[i+1] * stage2Weight + posVibe[i+1] * stage3Weight;
+                let targetZ = posHierarchy[i+2] * stage1Weight + posSpiral[i+2] * stage2Weight + posVibe[i+2] * stage3Weight;
+
+                // Add dynamic breathing/waving based on the state
+                // Vibe state has more chaotic, organic movement
+                if (stage3Weight > 0) {
+                    let noise = Math.sin(elapsedTime * 2.0 + targetX * 0.05) * 2.0 * stage3Weight;
+                    targetX += Math.cos(elapsedTime + targetY * 0.05) * noise;
+                    targetY += Math.sin(elapsedTime + targetZ * 0.05) * noise;
+                }
+
+                // Update actual positions
+                positions[i] = targetX;
+                positions[i+1] = targetY;
+                positions[i+2] = targetZ;
+
+                // Interpolate colors
+                colors[i] = colHierarchy[i] * stage1Weight + colSpiral[i] * stage2Weight + colVibe[i] * stage3Weight;
+                colors[i+1] = colHierarchy[i+1] * stage1Weight + colSpiral[i+1] * stage2Weight + colVibe[i+1] * stage3Weight;
+                colors[i+2] = colHierarchy[i+2] * stage1Weight + colSpiral[i+2] * stage2Weight + colVibe[i+2] * stage3Weight;
+            }
+
+            particleSystem.geometry.attributes.position.needsUpdate = true;
+            particleSystem.geometry.attributes.color.needsUpdate = true;
+
+            // Camera movement based on scroll and mouse
+            // Move camera up and zoom in slightly as we scroll
+            camera.position.y = 20 + (scrollProgress * 20);
+            camera.position.z = 120 - (scrollProgress * 40);
+            
+            // Add subtle parallax with mouse
+            camera.position.x = mouseX * 10;
+            camera.position.y += mouseY * 5;
+            
+            camera.lookAt(0, scrollProgress * 20, 0);
+
+            // Rotate the entire system slowly
+            particleSystem.rotation.y = elapsedTime * 0.05 + (scrollProgress * Math.PI);
+
+            renderer.render(scene, camera);
+        }
+
+        // --------------------------------------------------------
+        // 5. RESIZE HANDLER
+        // --------------------------------------------------------
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Start Animation Loop
+        window.onload = function() {
+            animate();
+        };
+
+    </script>
+</body>
+</html>

@@ -4,6 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIBEOCRACY | Intelligence Over Hierarchy</title>
+    <meta name="description" content="Vibeocracy — Intelligence over Hierarchy. A 2028 presidential platform for the post-hierarchy era: liquid democracy, collective intelligence, and the end of the two-party pyramid.">
+    <meta name="author" content="VIBEOCRACY">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#050505">
+    <meta name="msapplication-TileColor" content="#050505">
+    <meta name="msapplication-TileImage" content="assets/favicon-512.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+    <link rel="manifest" href="assets/site.webmanifest">
+
+    <!-- Open Graph (Facebook, LinkedIn, Discord, WhatsApp, iMessage, Slack) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="VIBEOCRACY">
+    <meta property="og:title" content="VIBEOCRACY | Intelligence Over Hierarchy">
+    <meta property="og:description" content="The legacy systems are crashing. A 2028 presidential platform for the exponential chapter ahead.">
+    <meta property="og:image" content="assets/og-image.png">
+    <meta property="og:image:secure_url" content="assets/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="VIBEOCRACY — Intelligence Over Hierarchy. A 2028 presidential platform for the post-hierarchy era.">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="VIBEOCRACY | Intelligence Over Hierarchy">
+    <meta name="twitter:description" content="The legacy systems are crashing. A 2028 presidential platform for the exponential chapter ahead.">
+    <meta name="twitter:image" content="assets/og-image.png">
+    <meta name="twitter:image:alt" content="VIBEOCRACY — Intelligence Over Hierarchy. A 2028 presidential platform for the post-hierarchy era.">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,6 +82,12 @@
             padding: 2rem 10vw;
             position: relative;
         }
+        @media (max-width: 1024px) {
+            .section { padding-top: 5rem; padding-bottom: 5rem; row-gap: 2.5rem; }
+        }
+        @media (max-width: 640px) {
+            #sec-5 { padding-top: 1rem; padding-bottom: 1rem; min-height: auto; justify-content: flex-start; }
+        }
 
         .glass-panel {
             background: rgba(10, 10, 10, 0.4);
@@ -58,6 +97,10 @@
             border-radius: 24px;
             padding: 3rem;
             max-width: 800px;
+            overflow-wrap: break-word;
+        }
+        @media (max-width: 640px) {
+            .glass-panel { padding: 2rem 1.5rem; border-radius: 20px; }
         }
 
         .text-gradient {
@@ -125,6 +168,18 @@
         .cursor-ring.is-active { width: 60px; height: 60px; background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.6); }
         @media (pointer: coarse) {
             .cursor-dot, .cursor-ring { display: none; }
+        }
+        @media (pointer: fine) {
+            body.custom-cursor-active, body.custom-cursor-active a, body.custom-cursor-active button { cursor: none; }
+        }
+
+        /* ---------- Respect reduced-motion preference ---------- */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
         /* ---------- Nav ---------- */
@@ -235,18 +290,33 @@
         /* ---------- Spiral cards (sec 3) ---------- */
         .spiral-track { will-change: transform; }
         .spiral-card {
+            position: relative;
+            z-index: 2;
             flex-shrink: 0;
             width: 280px;
             height: 340px;
             border-radius: 22px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.18);
             padding: 2rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.12);
         }
         @media (min-width: 768px) { .spiral-card { width: 340px; } }
+        @media (max-width: 767px) {
+            .spiral-card { height: 180px; padding: 1.25rem; }
+            .spiral-card p { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+            .section-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        }
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .spiral-card { height: 200px; padding: 1.5rem; }
+            .spiral-card p { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+            .section-desc { font-size: 0.9rem !important; }
+        }
         .spiral-progress-track { position: relative; }
         .spiral-progress-fill { width: 0%; }
 
@@ -286,6 +356,51 @@
         }
 
         .reveal { opacity: 0; }
+
+        /* ---------- Aurora mesh-gradient field (post-spiral sections) ---------- */
+        .aurora-field {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            opacity: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .aurora-blob {
+            position: absolute;
+            width: 46vw;
+            height: 46vw;
+            min-width: 340px;
+            min-height: 340px;
+            max-width: 640px;
+            max-height: 640px;
+            border-radius: 50%;
+            filter: blur(90px);
+            mix-blend-mode: screen;
+            opacity: 0.55;
+            background: radial-gradient(circle at 50% 50%, var(--c), transparent 70%);
+            will-change: transform;
+        }
+        .aurora-blob.b1 { top: 6%; left: 4%; --c: rgba(45,212,191,0.65); animation: auroraDrift1 26s ease-in-out infinite; }
+        .aurora-blob.b2 { top: 38%; right: 6%; --c: rgba(168,85,247,0.55); animation: auroraDrift2 32s ease-in-out infinite; }
+        .aurora-blob.b3 { bottom: 8%; left: 20%; --c: rgba(59,130,246,0.5); animation: auroraDrift3 22s ease-in-out infinite; }
+        .aurora-blob.b4 { top: 58%; left: 42%; --c: rgba(240,147,251,0.45); animation: auroraDrift1 30s ease-in-out infinite reverse; }
+        .aurora-blob.b5 { top: 10%; right: 28%; --c: rgba(20,184,166,0.4); animation: auroraDrift2 20s ease-in-out infinite reverse; }
+
+        @keyframes auroraDrift1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(6vw, 4vh) scale(1.15); }
+            66% { transform: translate(-4vw, 6vh) scale(0.9); }
+        }
+        @keyframes auroraDrift2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-8vw, -5vh) scale(1.2); }
+        }
+        @keyframes auroraDrift3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            40% { transform: translate(5vw, -6vh) scale(1.1); }
+            70% { transform: translate(-6vw, -2vh) scale(0.95); }
+        }
     </style>
 </head>
 <body>
@@ -312,16 +427,23 @@
         <a href="https://PRES2028.com" target="_blank" data-hover class="text-xs tracking-[0.2em] uppercase border border-white/20 rounded-full px-4 py-2 hover:bg-white hover:text-black transition-colors duration-300">2028</a>
     </nav>
 
-    <div class="side-tag hidden lg:flex">
+    <div class="side-tag hidden md:flex">
         <span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
         <span class="label">Intelligence Over Hierarchy</span>
     </div>
 
-    <div class="section-index hidden md:block">
+    <div class="section-index">
         <span id="sec-index">01</span> / 05
     </div>
 
     <div id="canvas-container"></div>
+    <div class="aurora-field" id="aurora-field" aria-hidden="true">
+        <span class="aurora-blob b1"></span>
+        <span class="aurora-blob b2"></span>
+        <span class="aurora-blob b3"></span>
+        <span class="aurora-blob b4"></span>
+        <span class="aurora-blob b5"></span>
+    </div>
 
     <main id="content-wrapper">
 
@@ -329,7 +451,7 @@
         <section class="section items-center text-center" id="sec-1">
             <div class="grid-bg"></div>
 
-            <div class="absolute top-28 left-6 md:left-10 z-10 hidden sm:flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase text-gray-500">
+            <div class="absolute top-28 left-6 md:left-10 z-10 hidden lg:flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase text-gray-500">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 System Online — Legacy Deprecated
             </div>
@@ -337,10 +459,10 @@
                 Made for Minds. Built for Millions.
             </div>
 
-            <div class="glass-panel mx-auto mt-20 relative z-10" id="hero-panel">
+            <div class="glass-panel mx-auto mt-4 sm:mt-20 relative z-10" id="hero-panel">
                 <h2 class="text-sm uppercase tracking-[0.3em] text-gray-400 mb-4 reveal" id="hero-eyebrow">Welcome to the Next Evolution</h2>
                 <div class="ov-hidden">
-                    <h1 class="text-6xl md:text-8xl font-bold display-font mb-6 leading-tight" id="hero-title" style="transform: translateY(110%);">
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold display-font mb-6 leading-tight" id="hero-title" style="transform: translateY(110%);">
                         VIBE<span class="text-gradient">OCRACY</span>
                     </h1>
                 </div>
@@ -360,10 +482,10 @@
                 <div>
                     <div class="index-label text-blue-500 mb-3">01 — The Pyramid</div>
                     <div class="ov-hidden"><h2 class="text-4xl md:text-5xl font-bold display-font mb-6 reveal-line">The End of<br>Rigid Architecture</h2></div>
-                    <p class="text-lg text-gray-300 mb-4 leading-relaxed reveal">
+                    <p class="section-desc text-base sm:text-lg text-gray-300 mb-4 leading-relaxed reveal">
                         For centuries, humanity has organized through strict, top-down hierarchies. A two-party system operating on legacy code. It breeds apathy, limits bandwidth, and fails to capture the true nuance of 300 million sovereign agents.
                     </p>
-                    <p class="text-lg text-gray-300 leading-relaxed mb-10 reveal">
+                    <p class="section-desc text-base sm:text-lg text-gray-300 leading-relaxed mb-10 reveal">
                         The corporate politician is obsolete. The "black breath" of totalitarian despair is fading. We must upgrade the state.
                     </p>
                     <div class="flex gap-12">
@@ -393,32 +515,32 @@
             <div class="px-[6vw] md:px-[10vw] mb-10 relative z-10">
                 <div class="index-label text-yellow-500 mb-3">02 — Spiral Dynamics</div>
                 <div class="ov-hidden"><h2 class="text-4xl md:text-5xl font-bold display-font reveal-line"><span class="text-gradient-spiral">Ascending the Spiral</span></h2></div>
-                <p class="text-lg text-gray-400 max-w-xl mt-4 reveal">From egocentric power to second-tier, meta-crisis aware systems — six stages, one trajectory.</p>
+                <p class="section-desc text-base sm:text-lg text-gray-400 max-w-xl mt-4 reveal">From egocentric power to second-tier, meta-crisis aware systems — six stages, one trajectory.</p>
             </div>
 
             <div class="overflow-hidden">
                 <div class="spiral-track flex gap-6 pl-[6vw] md:pl-[10vw] pr-[6vw] md:pr-[10vw]">
-                    <div class="spiral-card" style="border-color: rgba(239,68,68,0.3); background: linear-gradient(160deg, rgba(239,68,68,0.1), transparent);">
+                    <div class="spiral-card" style="border-color: rgba(239,68,68,0.35); background: linear-gradient(160deg, rgba(239,68,68,0.13), rgba(8,8,10,0.12));">
                         <div class="font-mono text-xs text-red-400">01 / RED</div>
                         <div><h3 class="text-3xl display-font font-bold mb-2">Power</h3><p class="text-gray-400 text-sm leading-relaxed">Egocentric survival. Impulsive, dominance-driven, exploitative.</p></div>
                     </div>
-                    <div class="spiral-card" style="border-color: rgba(59,130,246,0.3); background: linear-gradient(160deg, rgba(59,130,246,0.1), transparent);">
+                    <div class="spiral-card" style="border-color: rgba(59,130,246,0.35); background: linear-gradient(160deg, rgba(59,130,246,0.13), rgba(8,8,10,0.12));">
                         <div class="font-mono text-xs text-blue-400">02 / BLUE</div>
                         <div><h3 class="text-3xl display-font font-bold mb-2">Order</h3><p class="text-gray-400 text-sm leading-relaxed">Rigid hierarchy. Rules, duty, and absolute truth above the self.</p></div>
                     </div>
-                    <div class="spiral-card" style="border-color: rgba(249,115,22,0.3); background: linear-gradient(160deg, rgba(249,115,22,0.1), transparent);">
+                    <div class="spiral-card" style="border-color: rgba(249,115,22,0.35); background: linear-gradient(160deg, rgba(249,115,22,0.13), rgba(8,8,10,0.12));">
                         <div class="font-mono text-xs text-orange-400">03 / ORANGE</div>
                         <div><h3 class="text-3xl display-font font-bold mb-2">Achievement</h3><p class="text-gray-400 text-sm leading-relaxed">Strategic ambition. Markets, meritocracy, and relentless growth.</p></div>
                     </div>
-                    <div class="spiral-card" style="border-color: rgba(34,197,94,0.3); background: linear-gradient(160deg, rgba(34,197,94,0.1), transparent);">
+                    <div class="spiral-card" style="border-color: rgba(34,197,94,0.35); background: linear-gradient(160deg, rgba(34,197,94,0.13), rgba(8,8,10,0.12));">
                         <div class="font-mono text-xs text-green-400">04 / GREEN</div>
                         <div><h3 class="text-3xl display-font font-bold mb-2">Empathy</h3><p class="text-gray-400 text-sm leading-relaxed">Pluralistic consensus. Community, equality, and shared feeling.</p></div>
                     </div>
-                    <div class="spiral-card" style="border-color: rgba(234,179,8,0.3); background: linear-gradient(160deg, rgba(234,179,8,0.1), transparent);">
+                    <div class="spiral-card" style="border-color: rgba(234,179,8,0.35); background: linear-gradient(160deg, rgba(234,179,8,0.13), rgba(8,8,10,0.12));">
                         <div class="font-mono text-xs text-yellow-400">05 / YELLOW</div>
                         <div><h3 class="text-3xl display-font font-bold mb-2">Systems</h3><p class="text-gray-400 text-sm leading-relaxed">Integrative flexibility. Complexity itself becomes home.</p></div>
                     </div>
-                    <div class="spiral-card" style="border-color: rgba(20,184,166,0.3); background: linear-gradient(160deg, rgba(20,184,166,0.1), transparent);">
+                    <div class="spiral-card" style="border-color: rgba(20,184,166,0.35); background: linear-gradient(160deg, rgba(20,184,166,0.13), rgba(8,8,10,0.12));">
                         <div class="font-mono text-xs text-teal-400">06 / TURQUOISE</div>
                         <div><h3 class="text-3xl display-font font-bold mb-2">Holistic</h3><p class="text-gray-400 text-sm leading-relaxed">Second-tier awareness. Meta-crisis coherent, planetary leadership.</p></div>
                     </div>
@@ -436,10 +558,10 @@
                 <div>
                     <div class="index-label text-teal-400 mb-3">03 — The Vibe Network</div>
                     <div class="ov-hidden"><h2 class="text-4xl md:text-5xl font-bold display-font mb-6 reveal-line">Vibes as the Highest<br><span class="text-gradient">Intelligence</span></h2></div>
-                    <p class="text-lg text-gray-300 mb-4 leading-relaxed reveal">
+                    <p class="section-desc text-base sm:text-lg text-gray-300 mb-4 leading-relaxed reveal">
                         We don't need a parliament of seven parties; we need 300 million parties. A decentralized trust layer where sense-making happens organically.
                     </p>
-                    <p class="text-lg text-gray-300 mb-6 leading-relaxed reveal">
+                    <p class="section-desc text-base sm:text-lg text-gray-300 mb-6 leading-relaxed reveal">
                         Palantir for the people. A transparent dashboard of fiscal realities. The era of the "Vibe" isn't woo—it's the highest form of distributed computational resonance among humans. It's liquid democracy made real.
                     </p>
                     <div class="inline-block px-6 py-2 border border-teal-500/50 rounded-full text-teal-300 text-sm font-mono bg-teal-500/10 reveal">
@@ -510,15 +632,15 @@
                 <div class="cta-blob" id="cta-blob"></div>
 
                 <div class="ov-hidden">
-                    <h2 class="text-5xl md:text-7xl font-bold display-font mb-6 relative z-10 text-white reveal-line">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold display-font mb-6 relative z-10 text-white reveal-line">
                         THE EXPONENTIAL<br>CHAPTER
                     </h2>
                 </div>
-                <p class="text-xl md:text-2xl text-gray-300 font-light mb-10 max-w-2xl mx-auto leading-relaxed relative z-10 reveal">
+                <p class="section-desc text-base sm:text-xl md:text-2xl text-gray-300 font-light mb-10 max-w-2xl mx-auto leading-relaxed relative z-10 reveal">
                     The next leader of the most powerful nation <strong>must</strong> be the right vibe for the exponential chapter we are entering.
                 </p>
 
-                <a href="https://PRES2028.com" target="_blank" data-magnetic data-hover class="relative z-10 inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-black bg-white rounded-full transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)]">
+                <a href="https://PRES2028.com" target="_blank" data-magnetic data-hover class="relative z-10 inline-flex items-center justify-center px-6 py-3.5 sm:px-8 sm:py-4 text-sm sm:text-lg font-bold text-black bg-white rounded-full transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)]">
                     <span data-magnetic-inner class="inline-flex items-center">
                         ENTER PRES2028.COM
                         <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -542,11 +664,12 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         // --------------------------------------------------------
         // 0. LENIS SMOOTH SCROLL <-> GSAP TICKER
         // --------------------------------------------------------
         const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
-        window.__lenis = lenis;
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => lenis.raf(time * 1000));
         gsap.ticker.lagSmoothing(0);
@@ -562,7 +685,8 @@
         // --------------------------------------------------------
         // 1. CUSTOM CURSOR
         // --------------------------------------------------------
-        if (window.matchMedia('(pointer: fine)').matches) {
+        if (window.matchMedia('(pointer: fine)').matches && !prefersReducedMotion) {
+            document.body.classList.add('custom-cursor-active');
             const dot = document.querySelector('.cursor-dot');
             const ring = document.querySelector('.cursor-ring');
             const setDot = gsap.quickTo(dot, 'x', { duration: 0.1, ease: 'power3' });
@@ -591,26 +715,83 @@
         });
 
         // --------------------------------------------------------
+        // 2b. SPIRAL PINNED HORIZONTAL SCROLL (sec-3)
+        // Created before section-position-dependent triggers below so
+        // their start/end values account for this pin's extra scroll length.
+        // --------------------------------------------------------
+        // Pinned scroll-jack runs at every viewport size, including phones,
+        // so the spiral animation matches desktop 1:1.
+        (function () {
+            const track = document.querySelector('.spiral-track');
+            const getDistance = () => track.scrollWidth - window.innerWidth;
+
+            gsap.to(track, {
+                x: () => -getDistance(),
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#sec-3',
+                    start: 'top top',
+                    end: () => '+=' + getDistance(),
+                    scrub: 0.6,
+                    pin: true,
+                    anticipatePin: 1,
+                    invalidateOnRefresh: true,
+                    onUpdate: (self) => {
+                        document.querySelector('.spiral-progress-fill').style.width = (self.progress * 100) + '%';
+                    }
+                }
+            });
+        })();
+
+        // --------------------------------------------------------
+        // 2c. PARTICLE -> AURORA CROSSFADE
+        // The particle field only exists through Hierarchy/Spiral; from here
+        // on the background is a drifting mesh-gradient aurora instead.
+        // --------------------------------------------------------
+        gsap.to('#canvas-container', {
+            opacity: 0,
+            ease: 'none',
+            scrollTrigger: { trigger: '#sec-4', start: 'top 85%', end: 'top 30%', scrub: true }
+        });
+        gsap.to('#aurora-field', {
+            opacity: 1,
+            ease: 'none',
+            scrollTrigger: { trigger: '#sec-4', start: 'top 85%', end: 'top 30%', scrub: true }
+        });
+        gsap.to('#aurora-field', {
+            filter: 'hue-rotate(70deg)',
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '#sec-4', start: 'top bottom',
+                endTrigger: '#sec-5', end: 'bottom bottom',
+                scrub: 1
+            }
+        });
+
+        // --------------------------------------------------------
         // 3. NAV ACTIVE STATE + BOTTOM INDEX
+        // Uses live bounding rects (not ScrollTrigger start/end math) so it
+        // stays accurate across the pinned spiral section.
         // --------------------------------------------------------
         const sections = gsap.utils.toArray('.section, #sec-3');
         const navLinks = gsap.utils.toArray('.nav-link');
         const indexEl = document.getElementById('sec-index');
 
-        sections.forEach((sec, i) => {
-            ScrollTrigger.create({
-                trigger: sec,
-                start: 'top center',
-                end: 'bottom center',
-                onToggle: (self) => {
-                    if (!self.isActive) return;
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    const link = document.querySelector(`.nav-link[data-target="#${sec.id}"]`);
-                    if (link) link.classList.add('active');
-                    indexEl.textContent = String(i + 1).padStart(2, '0');
-                }
-            });
-        });
+        function updateActiveSection() {
+            const centerY = window.innerHeight / 2;
+            let current = sections[0];
+            for (const sec of sections) {
+                const rect = sec.getBoundingClientRect();
+                if (rect.top <= centerY && rect.bottom >= centerY) { current = sec; break; }
+                if (rect.top <= centerY) current = sec;
+            }
+            const i = sections.indexOf(current);
+            navLinks.forEach(l => l.classList.toggle('active', l.dataset.target === `#${current.id}`));
+            indexEl.textContent = String(i + 1).padStart(2, '0');
+        }
+        lenis.on('scroll', updateActiveSection);
+        window.addEventListener('resize', updateActiveSection);
+        updateActiveSection();
 
         // --------------------------------------------------------
         // 4. HERO INTRO ANIMATION
@@ -692,46 +873,16 @@
             scale: 1, duration: 0.6, stagger: 0.06, ease: 'back.out(3)',
             scrollTrigger: { trigger: '#network-svg', start: 'top 80%', toggleActions: 'play none none reverse' }
         });
-        gsap.to('#network-svg .net-nodes circle', { opacity: 0.4, duration: 1.4, repeat: -1, yoyo: true, stagger: { each: 0.2, repeat: -1, yoyo: true } });
-
-        // --------------------------------------------------------
-        // 9. SPIRAL PINNED HORIZONTAL SCROLL (sec-3)
-        // --------------------------------------------------------
-        ScrollTrigger.matchMedia({
-            "(min-width: 768px)": function () {
-                const track = document.querySelector('.spiral-track');
-                const getDistance = () => track.scrollWidth - window.innerWidth;
-
-                gsap.to(track, {
-                    x: () => -getDistance(),
-                    ease: 'none',
-                    scrollTrigger: {
-                        trigger: '#sec-3',
-                        start: 'top top',
-                        end: () => '+=' + getDistance(),
-                        scrub: 0.6,
-                        pin: true,
-                        invalidateOnRefresh: true,
-                        onUpdate: (self) => {
-                            document.querySelector('.spiral-progress-fill').style.width = (self.progress * 100) + '%';
-                        }
-                    }
-                });
-            },
-            "(max-width: 767px)": function () {
-                const track = document.querySelector('.spiral-track');
-                track.style.overflowX = 'auto';
-                gsap.to('.spiral-card', {
-                    opacity: 1, y: 0, stagger: 0.1,
-                    scrollTrigger: { trigger: '#sec-3', start: 'top 60%' }
-                });
-            }
-        });
+        if (!prefersReducedMotion) {
+            gsap.to('#network-svg .net-nodes circle', { opacity: 0.4, duration: 1.4, repeat: -1, yoyo: true, stagger: { each: 0.2, repeat: -1, yoyo: true } });
+        }
 
         // --------------------------------------------------------
         // 10. MARQUEE (sec-4)
         // --------------------------------------------------------
-        gsap.to('.marquee-track', { xPercent: -50, duration: 22, ease: 'linear', repeat: -1 });
+        if (!prefersReducedMotion) {
+            gsap.to('.marquee-track', { xPercent: -50, duration: 22, ease: 'linear', repeat: -1 });
+        }
 
         // --------------------------------------------------------
         // 11. MAGNETIC CTA BUTTON
@@ -776,7 +927,7 @@
         // --------------------------------------------------------
         // 13. PARTICLE SYSTEM GENERATION (First Principles Math)
         // --------------------------------------------------------
-        const particleCount = 12000;
+        const particleCount = 10000;
         const geometry = new THREE.BufferGeometry();
 
         const currentPositions = new Float32Array(particleCount * 3);
@@ -787,9 +938,6 @@
 
         const posSpiral = new Float32Array(particleCount * 3);
         const colSpiral = new Float32Array(particleCount * 3);
-
-        const posVibe = new Float32Array(particleCount * 3);
-        const colVibe = new Float32Array(particleCount * 3);
 
         const sizes = new Float32Array(particleCount);
         const color = new THREE.Color();
@@ -821,7 +969,7 @@
             colHierarchy[pIndex + 1] = color.g;
             colHierarchy[pIndex + 2] = color.b;
 
-            sizes[i] = Math.random() * 2.0 + 0.5;
+            sizes[i] = Math.random() * 1.2 + 0.35;
             pIndex += 3;
         }
 
@@ -855,32 +1003,6 @@
             pIndex += 3;
         }
 
-        pIndex = 0;
-        for (let i = 0; i < particleCount; i++) {
-            let u = Math.random();
-            let v = Math.random();
-            let theta = u * 2.0 * Math.PI;
-            let phi = Math.acos(2.0 * v - 1.0);
-            let r = 50 + (Math.random() * 20);
-
-            let px = r * Math.sin(phi) * Math.cos(theta);
-            let py = r * Math.sin(phi) * Math.sin(theta);
-            let pz = r * Math.cos(phi);
-
-            posVibe[pIndex] = px;
-            posVibe[pIndex + 1] = py;
-            posVibe[pIndex + 2] = pz;
-
-            let vibeHue = 0.5 + (Math.random() * 0.4);
-            color.setHSL(vibeHue, 0.9, 0.6);
-
-            colVibe[pIndex] = color.r;
-            colVibe[pIndex + 1] = color.g;
-            colVibe[pIndex + 2] = color.b;
-
-            pIndex += 3;
-        }
-
         for (let i = 0; i < currentPositions.length; i++) {
             currentPositions[i] = posHierarchy[i];
             currentColors[i] = colHierarchy[i];
@@ -898,7 +1020,7 @@
                 void main() {
                     vColor = color;
                     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                    gl_PointSize = size * (300.0 / -mvPosition.z);
+                    gl_PointSize = size * (220.0 / -mvPosition.z);
                     gl_Position = projectionMatrix * mvPosition;
                 }
             `,
@@ -908,7 +1030,7 @@
                     float d = distance(gl_PointCoord, vec2(0.5, 0.5));
                     if(d > 0.5) discard;
                     float alpha = (0.5 - d) * 2.0;
-                    gl_FragColor = vec4(vColor, alpha * 0.8);
+                    gl_FragColor = vec4(vColor, alpha * 0.45);
                 }
             `,
             transparent: true,
@@ -952,49 +1074,34 @@
             const positions = particleSystem.geometry.attributes.position.array;
             const colors = particleSystem.geometry.attributes.color.array;
 
-            let stage1Weight = 0, stage2Weight = 0, stage3Weight = 0;
-
-            if (scrollProgress < 0.4) {
-                let p = scrollProgress / 0.4;
-                p = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
-                stage1Weight = 1 - p; stage2Weight = p; stage3Weight = 0;
-            } else {
-                let p = (scrollProgress - 0.4) / 0.6;
-                p = Math.min(Math.max(p, 0), 1);
-                p = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
-                stage1Weight = 0; stage2Weight = 1 - p; stage3Weight = p;
-            }
+            // Shape morph (hierarchy -> spiral) completes by scrollProgress 0.4,
+            // then freezes as the spiral so it can fade out into the aurora field.
+            const shapeProgress = Math.min(scrollProgress, 0.4);
+            let p = shapeProgress / 0.4;
+            p = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+            const stage1Weight = 1 - p;
+            const stage2Weight = p;
 
             for (let i = 0; i < particleCount * 3; i += 3) {
-                let targetX = posHierarchy[i] * stage1Weight + posSpiral[i] * stage2Weight + posVibe[i] * stage3Weight;
-                let targetY = posHierarchy[i + 1] * stage1Weight + posSpiral[i + 1] * stage2Weight + posVibe[i + 1] * stage3Weight;
-                let targetZ = posHierarchy[i + 2] * stage1Weight + posSpiral[i + 2] * stage2Weight + posVibe[i + 2] * stage3Weight;
+                positions[i] = posHierarchy[i] * stage1Weight + posSpiral[i] * stage2Weight;
+                positions[i + 1] = posHierarchy[i + 1] * stage1Weight + posSpiral[i + 1] * stage2Weight;
+                positions[i + 2] = posHierarchy[i + 2] * stage1Weight + posSpiral[i + 2] * stage2Weight;
 
-                if (stage3Weight > 0) {
-                    let noise = Math.sin(elapsedTime * 2.0 + targetX * 0.05) * 2.0 * stage3Weight;
-                    targetX += Math.cos(elapsedTime + targetY * 0.05) * noise;
-                    targetY += Math.sin(elapsedTime + targetZ * 0.05) * noise;
-                }
-
-                positions[i] = targetX;
-                positions[i + 1] = targetY;
-                positions[i + 2] = targetZ;
-
-                colors[i] = colHierarchy[i] * stage1Weight + colSpiral[i] * stage2Weight + colVibe[i] * stage3Weight;
-                colors[i + 1] = colHierarchy[i + 1] * stage1Weight + colSpiral[i + 1] * stage2Weight + colVibe[i + 1] * stage3Weight;
-                colors[i + 2] = colHierarchy[i + 2] * stage1Weight + colSpiral[i + 2] * stage2Weight + colVibe[i + 2] * stage3Weight;
+                colors[i] = colHierarchy[i] * stage1Weight + colSpiral[i] * stage2Weight;
+                colors[i + 1] = colHierarchy[i + 1] * stage1Weight + colSpiral[i + 1] * stage2Weight;
+                colors[i + 2] = colHierarchy[i + 2] * stage1Weight + colSpiral[i + 2] * stage2Weight;
             }
 
             particleSystem.geometry.attributes.position.needsUpdate = true;
             particleSystem.geometry.attributes.color.needsUpdate = true;
 
-            camera.position.y = 20 + (scrollProgress * 20);
-            camera.position.z = 120 - (scrollProgress * 40);
+            camera.position.y = 20 + (shapeProgress * 20);
+            camera.position.z = 120 - (shapeProgress * 40);
             camera.position.x = mouseX * 10;
             camera.position.y += mouseY * 5;
-            camera.lookAt(0, scrollProgress * 20, 0);
+            camera.lookAt(0, shapeProgress * 20, 0);
 
-            particleSystem.rotation.y = elapsedTime * 0.05 + (scrollProgress * Math.PI);
+            particleSystem.rotation.y = (prefersReducedMotion ? 0 : elapsedTime * 0.05) + (shapeProgress * Math.PI);
 
             renderer.render(scene, camera);
         }
